@@ -10,14 +10,14 @@ class ProductsResponse extends Equatable {
   @JsonKey(name: "total")
   final int? total;
   @JsonKey(name: "skip")
-  final int? skip;
+  final int? page;
   @JsonKey(name: "limit")
   final int? limit;
 
   const ProductsResponse({
     required this.products,
     required this.total,
-    required this.skip,
+    required this.page,
     required this.limit,
   });
 
@@ -28,7 +28,7 @@ class ProductsResponse extends Equatable {
   List<Object?> get props => [
     products,
     total,
-    skip,
+    page,
     limit,
   ];
 }

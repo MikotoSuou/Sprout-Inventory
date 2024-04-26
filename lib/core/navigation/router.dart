@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sprout_inventory/core/di/di.dart';
 import 'package:sprout_inventory/core/navigation/routes.dart';
 import 'package:sprout_inventory/features/product/presentation/product_detail/product_detail_screen.dart';
 import 'package:sprout_inventory/features/product/presentation/products/products_screen.dart';
@@ -20,7 +21,7 @@ final router = GoRouter(
         parentNavigatorKey: rootNavigatorKey,
         path: Routes.products,
         pageBuilder: (context, state) {
-          // initMaintenanceDependencies();
+          initProductsDependencies();
           return AppTransition.none(state: state, child: const ProductsScreen());
         }
       ),

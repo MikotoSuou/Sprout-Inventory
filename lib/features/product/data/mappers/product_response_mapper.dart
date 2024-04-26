@@ -6,7 +6,7 @@ import 'package:sprout_inventory/features/product/domain/entities/product.dart';
 
 extension ProductResponseMapper on ProductResponse? {
   Product get toDomain {
-    final formatter = NumberFormat.simpleCurrency(locale: "en_US");
+    final formatter = NumberFormat.simpleCurrency(locale: "en_PH", name: "₱");
     final priceEntity = this?.price ?? 0;
     final parsedPrice = formatter.format(priceEntity);
 
@@ -14,7 +14,7 @@ extension ProductResponseMapper on ProductResponse? {
       id: this?.id ?? 0,
       title: this?.title ?? Constants.emptyString,
       price: parsedPrice,
-      thumbnail: this?.title ?? Constants.emptyString,
+      thumbnail: this?.thumbnail ?? Constants.emptyString,
       stock: this?.stock ?? 0,
       discountPercentage: this?.discountPercentage ?? 0.0,
     );

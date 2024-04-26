@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sprout_inventory/core/utils/extensions/string_ext.dart';
 
 import '../../res/colors.dart';
@@ -68,24 +69,56 @@ class ImageNetwork extends StatelessWidget {
 
   Widget get _buildDefaultImage => Container(
     width: double.infinity,
-    height: 140,
+    height: values.Size.s150,
     clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(values.Size.s8),
       color: ColorManager.primary,
     ),
     alignment: Alignment.center,
-    child: const Icon(Icons.image_rounded, color: ColorManager.white),
+    child: const Icon(
+      Icons.image_rounded,
+      color: ColorManager.white,
+      size: values.Size.s60,
+    ),
   );
 
   Widget get _buildNetworkImage => Container(
     width: double.infinity,
-    height: 140,
+    height: values.Size.s150,
     clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: ColorManager.secondary,
+      borderRadius: BorderRadius.circular(values.Size.s8),
+      color: ColorManager.primary,
     ),
     child: Image.network(url, fit: BoxFit.cover),
+  );
+}
+
+class ShimmerWidget extends StatelessWidget {
+  final double width;
+  final double height;
+  final EdgeInsetsGeometry? margin;
+
+  const ShimmerWidget({
+    super.key,
+    this.width = double.infinity,
+    required this.height,
+    this.margin
+  });
+
+  @override
+  Widget build(BuildContext context) => Shimmer.fromColors(
+    baseColor: ColorManager.grey,
+    highlightColor: ColorManager.veryLightGrey,
+    child: Container(
+      width: width,
+      height: height,
+      margin: margin,
+      decoration: ShapeDecoration(
+        color: ColorManager.grey,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(values.Size.s8)),
+      ),
+    ),
   );
 }

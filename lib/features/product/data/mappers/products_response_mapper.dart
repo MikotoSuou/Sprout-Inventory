@@ -13,7 +13,7 @@ extension ProductResponseMapper on ProductsResponse? {
     return Products(
       products: productsEntity,
       total: this?.total ?? 0,
-      skip: this?.skip ?? 0,
+      page: this?.page ?? 0,
       limit: this?.limit ?? 0
     );
   }
