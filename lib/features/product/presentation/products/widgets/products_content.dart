@@ -5,7 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:sprout_inventory/core/utils/helpers.dart';
 import 'package:sprout_inventory/core/utils/logger.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
-import 'package:sprout_inventory/features/product/presentation/products/blocs/products/products_bloc.dart';
+import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
 import 'package:sprout_inventory/features/product/presentation/products/models/products_state_model.dart';
 import 'package:sprout_inventory/features/product/presentation/products/widgets/product_tile.dart';
 import 'package:sprout_inventory/res/strings.dart';
@@ -24,7 +24,7 @@ class _ProductsContentState extends State<ProductsContent> {
 
   void _loadProducts() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductsBloc>().add(const ProductsGetItems());
+      context.read<ProductsBloc>().add(const GetProducts());
     });
   }
 
@@ -49,16 +49,29 @@ class _ProductsContentState extends State<ProductsContent> {
   @override
   Widget build(BuildContext context) => BlocConsumer<ProductsBloc, ProductsState>(
     listener: (context, state) {
-      if(state is ProductsFailed) {
+      if(state is ProductsLoadFailed) {
         logger.d("ProductsState :: failed");
         showErrorSnackBar(context, error: state.error);
       }
     },
     builder: (context, state) => switch (state) {
-      ProductsLoading() => const Center(child: CircularProgressIndicator()),
-      ProductsSuccess() || ProductsFailed() => _buildProducts(state.productsState),
+      ProductsLoading() => _buildLoading(),
+      ProductsLoaded() || ProductsLoadFailed() => _buildProducts(state.productsState),
       ProductsEmpty() => const Center(child: Text(Strings.noProductsToView)),
     },
+  );
+
+  Widget _buildLoading() => const Align(
+    alignment: Alignment.topCenter,
+    child: Row(
+      children: [
+        Expanded(child: ShimmerWidget(height: values.Size.s180)),
+
+        Space(width: values.Size.s10),
+
+        Expanded(child: ShimmerWidget(height: values.Size.s180))
+      ],
+    ),
   );
 
   Widget _buildProducts(ProductsStateModel state) => MasonryGridView.count(

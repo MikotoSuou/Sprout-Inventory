@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sprout_inventory/core/di/di.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
 import 'package:sprout_inventory/features/product/domain/usecases/get_products_usecase.dart';
-import 'package:sprout_inventory/features/product/presentation/products/blocs/products/products_bloc.dart';
+import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
 import 'package:sprout_inventory/features/product/presentation/products/widgets/products_content.dart';
 import 'package:sprout_inventory/res/strings.dart';
 
@@ -13,10 +13,8 @@ class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (_) => ProductsBloc(instance<GetProductsUseCase>())),
-    ],
+  Widget build(BuildContext context) => BlocProvider(
+    create: (_) => ProductsBloc(instance<GetProductsUseCase>()),
     child: SafeScaffold(
       body: Padding(
         padding: const EdgeInsets.all(values.Padding.p16),

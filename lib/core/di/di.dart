@@ -7,6 +7,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:sprout_inventory/features/product/data/data_source/products_data_source.dart';
 import 'package:sprout_inventory/features/product/data/repository/product_repository_impl.dart';
 import 'package:sprout_inventory/features/product/domain/repository/product_repository.dart';
+import 'package:sprout_inventory/features/product/domain/usecases/get_product_detail_usecase.dart';
 import '../../features/product/domain/usecases/get_products_usecase.dart';
 import '../data_source/remote/api_service.dart';
 import '../utils/dio_factory.dart';
@@ -31,9 +32,14 @@ class AppDependencies {
   }
 }
 
-
 FutureOr<void> initProductsDependencies() async {
   if(!GetIt.I.isRegistered<GetProductsUseCase>()) {
     instance.registerFactory<GetProductsUseCase>(() => GetProductsUseCase(instance()));
+  }
+}
+
+FutureOr<void> initProductDetailDependencies() async {
+  if(!GetIt.I.isRegistered<GetProductDetailUseCase>()) {
+    instance.registerFactory<GetProductDetailUseCase>(() => GetProductDetailUseCase(instance()));
   }
 }

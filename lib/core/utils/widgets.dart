@@ -56,10 +56,14 @@ class Space extends StatelessWidget {
 
 class ImageNetwork extends StatelessWidget {
   final String url;
+  final double? width;
+  final double? height;
 
   const ImageNetwork({
     super.key,
     required this.url,
+    this.width = double.infinity,
+    this.height,
   });
 
   @override
@@ -68,8 +72,8 @@ class ImageNetwork extends StatelessWidget {
       : _buildDefaultImage;
 
   Widget get _buildDefaultImage => Container(
-    width: double.infinity,
-    height: values.Size.s150,
+    width: width,
+    height: height,
     clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(values.Size.s8),
@@ -84,8 +88,8 @@ class ImageNetwork extends StatelessWidget {
   );
 
   Widget get _buildNetworkImage => Container(
-    width: double.infinity,
-    height: values.Size.s150,
+    width: width,
+    height: height,
     clipBehavior: Clip.antiAlias,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(values.Size.s8),
@@ -109,14 +113,14 @@ class ShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Shimmer.fromColors(
-    baseColor: ColorManager.grey,
+    baseColor: ColorManager.lightGrey,
     highlightColor: ColorManager.veryLightGrey,
     child: Container(
       width: width,
       height: height,
       margin: margin,
       decoration: ShapeDecoration(
-        color: ColorManager.grey,
+        color: ColorManager.lightGrey,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(values.Size.s8)),
       ),
     ),

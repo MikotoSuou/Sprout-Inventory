@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sprout_inventory/core/navigation/routes.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
 import 'package:sprout_inventory/features/product/domain/entities/product.dart';
 import '../../../../../res/colors.dart';
@@ -15,14 +17,17 @@ class ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: (){},
+    onTap: () => context.push(Routes.productDetail, extra: product.id),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Stack(
           children: [
-            ImageNetwork(url: product.thumbnail),
+            ImageNetwork(
+              url: product.thumbnail,
+              height: values.Size.s150,
+            ),
 
             Positioned(
               top: values.Size.s10,

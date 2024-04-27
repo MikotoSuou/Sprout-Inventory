@@ -15,14 +15,14 @@ final class ProductsLoading extends ProductsState {
   const ProductsLoading();
 }
 
-final class ProductsSuccess extends ProductsState {
-  const ProductsSuccess({required super.productsState});
+final class ProductsLoaded extends ProductsState {
+  const ProductsLoaded({required super.productsState});
 }
 
-final class ProductsFailed extends ProductsState {
+final class ProductsLoadFailed extends ProductsState {
   final String error;
 
-  const ProductsFailed({
+  const ProductsLoadFailed({
     required super.productsState,
     required this.error
   });

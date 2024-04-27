@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sprout_inventory/features/product/domain/usecases/get_products_usecase.dart';
 
-import '../../../../../../core/utils/helpers.dart';
-import '../../models/products_state_model.dart';
+import '../../../../../core/utils/helpers.dart';
+import '../models/products_state_model.dart';
 
 part 'products_event.dart';
 part 'products_state.dart';
@@ -15,14 +15,14 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final GetProductsUseCase _getProductsUseCase;
 
   ProductsBloc(this._getProductsUseCase) : super(const ProductsLoading()) {
-    on<ProductsGetItems>(
+    on<GetProducts>(
       _onGetProducts,
       transformer: debounceEvent(duration: const Duration(milliseconds: 100)),
     );
   }
 
   Future<void> _onGetProducts(
-    ProductsGetItems event,
+    GetProducts event,
     Emitter<ProductsState> emit
   ) async {
     if(state.productsState.hasReachedMax) return;
@@ -39,12 +39,12 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
         (products.isEmpty)
             ? emit(const ProductsEmpty())
-            : emit(ProductsSuccess(productsState: productsState));
+            : emit(ProductsLoaded(productsState: productsState));
       },
       (error) {
         (state.productsState.products.isEmpty)
             ? emit(const ProductsEmpty())
-            : emit(ProductsFailed(productsState: state.productsState, error: error.message));
+            : emit(ProductsLoadFailed(productsState: state.productsState, error: error.message));
       },
     );
   }

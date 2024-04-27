@@ -32,7 +32,7 @@ TextTheme get _textTheme => TextTheme(
   /// As the largest text on the screen, display styles are reserved for short,
   /// important text or numerals.
   displayLarge: boldTextStyle(color: ColorManager.black, fontSize: FontSize.s18), // bold black
-  displayMedium: boldTextStyle(color: ColorManager.black, fontSize: FontSize.s14), // medium black
+  displayMedium: mediumTextStyle(color: ColorManager.black, fontSize: FontSize.s14), // medium black
   displaySmall: regularTextStyle(color: ColorManager.grey, fontSize: FontSize.s14), // hints / disabled
 
   /// Headline styles are smaller than display styles. They're best-suited for
@@ -43,7 +43,7 @@ TextTheme get _textTheme => TextTheme(
 
   /// Titles are smaller than headline styles and should be used for shorter,
   /// medium-emphasis text.
-  titleLarge: boldTextStyle(color: ColorManager.primary, fontSize: FontSize.s25),
+  titleLarge: boldTextStyle(color: ColorManager.primary, fontSize: FontSize.s20),
   titleMedium: boldTextStyle(color: ColorManager.primary, fontSize: FontSize.s18),
   titleSmall: boldTextStyle(color: ColorManager.black, fontSize: FontSize.s14), // label
 

@@ -1,12 +1,13 @@
 
 import 'package:retrofit/retrofit.dart';
+import 'package:sprout_inventory/features/product/data/responses/product_detail_response.dart';
 import 'package:sprout_inventory/features/product/data/responses/products_response.dart';
 import '../../../../../core/data_source/remote/api_service.dart';
 
 
 abstract class IProductRemoteDataSource {
   Future<HttpResponse<ProductsResponse>> products(String page);
-  Future<HttpResponse<dynamic>> productDetail(int productId);
+  Future<HttpResponse<ProductDetailResponse>> productDetail(String productId);
 }
 
 class ProductRemoteDataSourceImpl implements IProductRemoteDataSource {
@@ -20,8 +21,7 @@ class ProductRemoteDataSourceImpl implements IProductRemoteDataSource {
   }
 
   @override
-  Future<HttpResponse> productDetail(int productId) async {
-    // TODO: implement productDetail
-    throw UnimplementedError();
+  Future<HttpResponse<ProductDetailResponse>> productDetail(String productId) async {
+    return await _apiService.productDetailService(productId);
   }
 }

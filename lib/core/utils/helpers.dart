@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
@@ -43,4 +45,10 @@ void hideSnackBar(BuildContext context) {
   } catch (error) {
     logger.e(error);
   }
+}
+
+// random number between 150 and 400
+double get randomHeight {
+  final randomNumber = Random().nextInt(251) + 150;
+  return randomNumber.toDouble();
 }

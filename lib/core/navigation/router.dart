@@ -30,7 +30,11 @@ final router = GoRouter(
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
         path: Routes.productDetail,
-        pageBuilder: (context, state) => AppTransition.slide(state: state, child: const ProductDetailScreen()),
+        pageBuilder: (context, state) {
+          initProductDetailDependencies();
+          final args = state.extra as int;
+          return AppTransition.slide(state: state, child: ProductDetailScreen(productId: args));
+        }
       ),
 
     ],
