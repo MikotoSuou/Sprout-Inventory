@@ -14,8 +14,8 @@ void main() {
     networkInfo = MockINetworkInfo();
   });
 
-  group("networkInfo", () {
-    test("isNetworkConnected when network is connected should return true", () async {
+  group("isNetworkConnected", () {
+    test("when network is connected should return true", () async {
       when(networkInfo.isNetworkConnected)
           .thenAnswer((_) async => true);
 
@@ -25,7 +25,7 @@ void main() {
       expect(result, isTrue);
     });
 
-    test("isNetworkConnected when network is not connected should return false", () async {
+    test("when network is not connected should return false", () async {
       when(networkInfo.isNetworkConnected)
           .thenAnswer((_) async => false);
 
@@ -34,8 +34,11 @@ void main() {
       verify(networkInfo.isNetworkConnected);
       expect(result, isFalse);
     });
+  });
 
-    test('onStatusChanged should emit correct InternetConnectionStatus events', () {
+
+  group("onStatusChanged", () {
+    test('should emit correct InternetConnectionStatus events', () {
       // Arrange
       final streamController = StreamController<InternetConnectionStatus>();
       final expectedEvents = [InternetConnectionStatus.connected, InternetConnectionStatus.disconnected];

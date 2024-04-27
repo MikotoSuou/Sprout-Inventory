@@ -9,6 +9,6 @@ extension ResponseExt on Response? {
 
   bool get isSuccessful => (this == null) ? false : (this!.statusCode != null && this!.statusCode! == 200);
 
-  String get errorMessage => (this == null && this!.statusMessage == null) ? ResponseMessage.unknown : this!.statusMessage!;
+  String get errorMessage => (this == null || this?.statusMessage == null) ? ResponseMessage.unknown : this!.statusMessage!;
 
 }
