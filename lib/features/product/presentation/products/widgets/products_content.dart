@@ -79,7 +79,10 @@ class _ProductsContentState extends State<ProductsContent> {
     crossAxisCount: 2,
     crossAxisSpacing: 10,
     mainAxisSpacing: 5,
-    padding: const EdgeInsets.symmetric(vertical: values.Padding.p10),
+    padding: const EdgeInsets.only(
+      top: values.Padding.p10,
+      bottom: values.Padding.p20,
+    ),
     itemCount: (state.hasReachedMax)
         ? state.products.length
         : state.products.length + 2,

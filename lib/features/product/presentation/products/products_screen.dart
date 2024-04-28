@@ -17,10 +17,12 @@ class ProductsScreen extends StatelessWidget {
     create: (_) => ProductsBloc(instance<GetProductsUseCase>()),
     child: SafeScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(values.Padding.p16),
+        padding: const EdgeInsets.symmetric(horizontal: values.Padding.p16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Space(height: values.Size.s16),
+
             Align(
               alignment: Alignment.center,
               child: Text(
