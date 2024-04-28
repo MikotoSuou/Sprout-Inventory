@@ -18,7 +18,7 @@ ProductsResponse _$ProductsResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ProductsResponseToJson(ProductsResponse instance) =>
     <String, dynamic>{
-      'products': instance.products,
+      'products': instance.products?.map((e) => e.toJson()).toList(),
       'total': instance.total,
       'skip': instance.page,
       'limit': instance.limit,

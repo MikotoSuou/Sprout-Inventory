@@ -1,0 +1,15 @@
+{
+  "products": [
+    {
+      "id": 0,
+      "title": "test",
+      "price": 1,
+      "thumbnail": "test",
+      "stock": 1,
+      "discountPercentage": 1
+    }
+  ],
+  "total": 1,
+  "skip": 1,
+  "limit": 1
+}

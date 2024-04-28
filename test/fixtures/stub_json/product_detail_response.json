@@ -1,0 +1,13 @@
+{
+  "id": 0,
+  "title": "test",
+  "description": "test",
+  "price": 1,
+  "discountPercentage": 1,
+  "rating": 1,
+  "stock": 1,
+  "brand": "test",
+  "category": "test",
+  "thumbnail": "test",
+  "images": ["test"]
+}
