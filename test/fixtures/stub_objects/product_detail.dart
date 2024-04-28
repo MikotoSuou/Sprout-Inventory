@@ -1,6 +1,8 @@
 import 'package:sprout_inventory/features/product/data/responses/product_detail_response.dart';
 import 'package:sprout_inventory/features/product/domain/entities/product_detail.dart';
 
+const stubProductDetailParam = 1;
+
 const stubProductDetailRequest = "1";
 
 const stubProductDetailResponse = ProductDetailResponse(
