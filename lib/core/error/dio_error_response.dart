@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'dio_error_response.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 class DioErrorResponse {
   @JsonKey(name: "error")
   String? error;

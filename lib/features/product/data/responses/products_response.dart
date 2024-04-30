@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:sprout_inventory/features/product/data/responses/product_response.dart';
 part 'products_response.g.dart';
 
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 class ProductsResponse extends Equatable {
   @JsonKey(name: "products")
   final List<ProductResponse>? products;
