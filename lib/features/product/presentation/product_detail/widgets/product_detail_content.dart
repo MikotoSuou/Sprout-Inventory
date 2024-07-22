@@ -4,7 +4,7 @@ import 'package:sprout_inventory/core/utils/helpers.dart';
 import 'package:sprout_inventory/core/utils/logger.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
 import 'package:sprout_inventory/features/product/domain/entities/product_detail.dart';
-import 'package:sprout_inventory/features/product/presentation/product_detail/blocs/product_detail_bloc.dart';
+import 'package:sprout_inventory/features/product/presentation/product_detail/cubit/product_detail_cubit.dart';
 import 'package:sprout_inventory/features/product/presentation/product_detail/widgets/product_detail_desc.dart';
 import 'package:sprout_inventory/features/product/presentation/product_detail/widgets/product_detail_images.dart';
 import 'package:sprout_inventory/features/product/presentation/product_detail/widgets/product_detail_price.dart';
@@ -22,18 +22,16 @@ class ProductDetailContent extends StatelessWidget {
       vertical: values.Padding.p20,
       horizontal: values.Padding.p16,
     ),
-    child: BlocConsumer<ProductDetailBloc, ProductDetailState>(
-      listener: (context, state) {
-        if(state is ProductDetailLoadFailed) {
-          logger.d(" failed");
-          showErrorSnackBar(context, error: state.error);
-        }
-      },
-      builder: (context, state) => switch (state) {
-        ProductDetailLoading() => _buildLoading(context),
-        ProductDetailLoaded() => _buildProductDetails(state.productDetail),
-        _ => const SizedBox.shrink(),
-      },
+    child: BlocConsumer<ProductDetailCubit, ProductDetailState>(
+      listener: (context, state) => state.maybeWhen(
+        failed: (error) => showErrorSnackBar(context, error: error),
+        orElse: () => {}
+      ),
+      builder: (context, state) => state.maybeWhen(
+        loading: () => _buildLoading(context),
+        loaded: (productDetail) => _buildProductDetails(productDetail),
+        orElse: () => const SizedBox.shrink()
+      ),
     ),
   );
 

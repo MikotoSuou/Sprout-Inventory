@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
-import 'package:sprout_inventory/features/product/presentation/product_detail/blocs/product_detail_bloc.dart';
+import 'package:sprout_inventory/features/product/presentation/product_detail/cubit/product_detail_cubit.dart';
 import '../../../../../../res/colors.dart';
 import '../../../../../res/values.dart' as values;
 
@@ -25,12 +25,12 @@ class ProductDetailAppBar extends StatelessWidget {
     pinned: true,
     centerTitle: true,
     clipBehavior: Clip.antiAlias,
-    flexibleSpace: BlocBuilder<ProductDetailBloc, ProductDetailState>(
-      builder: (context, state) => switch (state) {
-        ProductDetailLoading() => _loading(),
-        ProductDetailLoaded() => _thumbnail(state.productDetail.thumbnail),
-        _ => const SizedBox.shrink(),
-      },
+    flexibleSpace: BlocBuilder<ProductDetailCubit, ProductDetailState>(
+      builder: (context, state) => state.maybeWhen(
+        loading: () => _loading(),
+        loaded: (productDetail) => _thumbnail(productDetail.thumbnail),
+        orElse: () => const SizedBox.shrink()
+      ),
     ),
     shape: _borderRadius,
     leading: _backButton(context),

@@ -3,38 +3,52 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sprout_inventory/features/product/presentation/product_detail/blocs/product_detail_bloc.dart';
+import 'package:sprout_inventory/core/error/error_handler.dart';
+import 'package:sprout_inventory/core/error/failure.dart';
+import 'package:sprout_inventory/features/product/presentation/product_detail/cubit/product_detail_cubit.dart';
 import '../../../../../fixtures/stub_objects/product_detail.dart';
 import '../../../domain/usecases/get_product_detail_usecase_mock.mocks.dart';
 
 void main() {
   late MockGetProductDetailUseCase getProductDetailUseCase;
-  late ProductDetailBloc productDetailBloc;
+  late ProductDetailCubit cubit;
 
   setUp(() {
     getProductDetailUseCase = MockGetProductDetailUseCase();
-    productDetailBloc = ProductDetailBloc(getProductDetailUseCase);
+    cubit = ProductDetailCubit(getProductDetailUseCase);
   });
 
-  test("initial state should be ProductDetailInitial", () {
+  test("initial state should be ProductDetailState.loading", () {
     // assert
-    expect(productDetailBloc.state, equals(const ProductDetailInitial()));
+    expect(cubit.state, equals(const ProductDetailState.loading()));
   });
 
   group("GetProductDetail", () {
-
-    void setUpMockGetProductDetail() => when(getProductDetailUseCase(any))
+    void setUpMockGetProductDetailSuccess() => when(getProductDetailUseCase(any))
             .thenAnswer((_) async => const Left(stubProductDetail));
     
-    blocTest<ProductDetailBloc, ProductDetailState>(
-      "should get data from GetProductDetailUseCase",
-      setUp: () => setUpMockGetProductDetail(),
-      build: () => productDetailBloc,
-      act: (bloc) => bloc.add(const GetProductDetail(productId: stubProductDetailParam)),
+    blocTest<ProductDetailCubit, ProductDetailState>(
+      "should update the state to loaded state",
+      setUp: () => setUpMockGetProductDetailSuccess(),
+      build: () => cubit,
+      act: (cubit) => cubit.getProductDetail(productId: stubProductDetailParam),
       verify: (_) => getProductDetailUseCase(stubProductDetailParam),
+      expect: () => [ const ProductDetailState.loaded(stubProductDetail) ]
+    );
+
+    void setUpMockGetProductDetailFailed() => when(getProductDetailUseCase(any))
+        .thenAnswer((_) async => const Right(ServerFailure()));
+
+    blocTest<ProductDetailCubit, ProductDetailState>(
+      "should update the state to failed state",
+      setUp: () => setUpMockGetProductDetailFailed(),
+      build: () => cubit,
+      act: (cubit) => cubit.getProductDetail(productId: stubProductDetailParam),
+      verify: (_) => getProductDetailUseCase(stubProductDetailParam),
+      expect: () => [ const ProductDetailState.failed(ResponseMessage.serverError) ]
     );
   });
 
-  tearDown(() => productDetailBloc.close());
+  tearDown(() => cubit.close());
 
 }

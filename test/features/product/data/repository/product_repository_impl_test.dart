@@ -1,9 +1,11 @@
 
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retrofit/dio.dart';
+import 'package:sprout_inventory/core/error/error_handler.dart';
 import 'package:sprout_inventory/core/error/failure.dart';
 import 'package:sprout_inventory/features/product/data/repository/product_repository_impl.dart';
 import 'package:sprout_inventory/features/product/data/responses/product_detail_response.dart';
@@ -53,7 +55,10 @@ void main() {
     runTestsOnline(() {
       test('should return remote data when the call to remote data source is successful', () async {
         // arrange
-        final response = HttpResponse<ProductsResponse>(stubProductsResponse, Response(requestOptions: RequestOptions()));
+        final response = HttpResponse<ProductsResponse>(
+            stubProductsResponse,
+            Response(requestOptions: RequestOptions(), statusCode: 200)
+        );
         when(dataSource.products(any))
             .thenAnswer((_) async => Future.value(response));
 
@@ -62,7 +67,7 @@ void main() {
 
         // assert
         verify(dataSource.products(stubProductsRequest));
-        // expect(result, equals(const Left(stubProducts)));
+        expect(result, equals(const Left(stubProducts)));
       });
 
       test('should return server failure when the call to remote data source is unsuccessful', () async {
@@ -96,8 +101,11 @@ void main() {
     runTestsOnline(() {
       test('should return remote data when the call to remote data source is successful', () async {
         // arrange
-        final response = HttpResponse<ProductDetailResponse>(stubProductDetailResponse, Response(requestOptions: RequestOptions()));
-        when(dataSource.productDetail(any))
+        final response = HttpResponse<ProductDetailResponse>(
+            stubProductDetailResponse,
+            Response(requestOptions: RequestOptions(), statusCode: 200)
+        );
+        when(dataSource.productDetail(stubProductDetailRequest))
             .thenAnswer((_) async => Future.value(response));
 
         // act
@@ -105,7 +113,7 @@ void main() {
 
         // assert
         verify(dataSource.productDetail(stubProductDetailRequest));
-        // expect(result, equals(const Left(stubProductDetail)));
+        expect(result, equals(const Left(stubProductDetail)));
       });
 
       test('should return server failure when the call to remote data source is unsuccessful', () async {
