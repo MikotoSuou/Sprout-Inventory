@@ -53,16 +53,22 @@ void main() {
     runTestsOnline(() {
       test('should return remote data when the call to remote data source is successful', () async {
         // arrange
-        final response = HttpResponse<ProductsResponse>(stubProductsResponse, Response(requestOptions: RequestOptions()));
+        final response = HttpResponse<ProductsResponse>(
+            stubProductsResponse,
+            Response(
+              statusCode: 200,
+              requestOptions: RequestOptions()
+            )
+        );
         when(dataSource.products(any))
             .thenAnswer((_) async => Future.value(response));
 
         // act
-        await repository.getProducts(stubProductsParam);
+        final result = await repository.getProducts(stubProductsParam);
 
         // assert
         verify(dataSource.products(stubProductsRequest));
-        // expect(result, equals(const Left(stubProducts)));
+        expect(result, equals(const Left(stubProducts)));
       });
 
       test('should return server failure when the call to remote data source is unsuccessful', () async {
@@ -96,16 +102,19 @@ void main() {
     runTestsOnline(() {
       test('should return remote data when the call to remote data source is successful', () async {
         // arrange
-        final response = HttpResponse<ProductDetailResponse>(stubProductDetailResponse, Response(requestOptions: RequestOptions()));
+        final response = HttpResponse<ProductDetailResponse>(
+            stubProductDetailResponse,
+            Response(requestOptions: RequestOptions(), statusCode: 200)
+        );
         when(dataSource.productDetail(any))
             .thenAnswer((_) async => Future.value(response));
 
         // act
-        await repository.getProductDetail(stubProductDetailParam);
+        final result = await repository.getProductDetail(stubProductDetailParam);
 
         // assert
         verify(dataSource.productDetail(stubProductDetailRequest));
-        // expect(result, equals(const Left(stubProductDetail)));
+        expect(result, equals(const Left(stubProductDetail)));
       });
 
       test('should return server failure when the call to remote data source is unsuccessful', () async {
