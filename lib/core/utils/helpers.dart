@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,18 @@ EventTransformer<E> debounceEvent<E>({
   Duration duration = const Duration(milliseconds: 250)
 }) {
   return (events, mapper) => events.debounce(duration).switchMap(mapper);
+}
+
+class Debounce {
+  Debounce({ this.milliseconds });
+  final int? milliseconds;
+  late VoidCallback action;
+  Timer? _debounce;
+
+  run(VoidCallback action) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(Duration(milliseconds: milliseconds ?? 250), action);
+  }
 }
 
 void showErrorSnackBar(BuildContext context, {required String error}) {
