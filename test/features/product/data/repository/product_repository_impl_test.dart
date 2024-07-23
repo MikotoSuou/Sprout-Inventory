@@ -58,7 +58,7 @@ void main() {
             .thenAnswer((_) async => Future.value(response));
 
         // act
-        final result = await repository.getProducts(stubProductsParam);
+        await repository.getProducts(stubProductsParam);
 
         // assert
         verify(dataSource.products(stubProductsRequest));
@@ -101,7 +101,7 @@ void main() {
             .thenAnswer((_) async => Future.value(response));
 
         // act
-        final result = await repository.getProductDetail(stubProductDetailParam);
+        await repository.getProductDetail(stubProductDetailParam);
 
         // assert
         verify(dataSource.productDetail(stubProductDetailRequest));
