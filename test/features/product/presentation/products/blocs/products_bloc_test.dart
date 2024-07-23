@@ -3,7 +3,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sprout_inventory/core/error/error_handler.dart';
 import 'package:sprout_inventory/core/error/failure.dart';
 import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
 import 'package:sprout_inventory/features/product/presentation/products/models/products_state_model.dart';
