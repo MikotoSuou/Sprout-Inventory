@@ -1,4 +1,4 @@
-name: CI
+name: Main CI
 
 on:
   push:
@@ -31,9 +31,14 @@ jobs:
         run: flutter test
 
   build_apk:
-    name: Build Android APK
+    name: Build Signed Android APK
     needs: [flutter_test]
     runs-on: ubuntu-latest
+
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
       - name: Clone Repository
@@ -45,6 +50,10 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Decode keystore
+        run: |
+          echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > keystore.jks
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -55,10 +64,16 @@ jobs:
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --debug
+        run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4.3.4
         with:
           name: Inventory.apk
-          path: build/app/outputs/apk/debug/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Mapping File
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: mapping-file
+          path: build/app/outputs/symbols
