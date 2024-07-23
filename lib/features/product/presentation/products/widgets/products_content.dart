@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:sprout_inventory/core/utils/helpers.dart';
-import 'package:sprout_inventory/core/utils/logger.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
-import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
-import 'package:sprout_inventory/features/product/presentation/products/models/products_state_model.dart';
+import 'package:sprout_inventory/features/product/domain/entities/product.dart';
+import 'package:sprout_inventory/features/product/presentation/products/cubit/products_cubit.dart';
 import 'package:sprout_inventory/features/product/presentation/products/widgets/product_tile.dart';
 import 'package:sprout_inventory/res/strings.dart';
 import 'package:sprout_inventory/res/values.dart' as values;
@@ -24,7 +23,7 @@ class _ProductsContentState extends State<ProductsContent> {
 
   void _loadProducts() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProductsBloc>().add(const GetProducts());
+      context.read<ProductsCubit>().getProducts();
     });
   }
 
@@ -47,17 +46,15 @@ class _ProductsContentState extends State<ProductsContent> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocConsumer<ProductsBloc, ProductsState>(
-    listener: (context, state) {
-      if(state is ProductsLoadFailed) {
-        logger.d("ProductsState :: failed");
-        showErrorSnackBar(context, error: state.error);
-      }
+  Widget build(BuildContext context) => BlocConsumer<ProductsCubit, ProductsState>(
+    listener: (context, state) => switch(state.status) {
+      ProductsStatus.failed => showErrorSnackBar(context, error: state.error),
+      _ => {}
     },
-    builder: (context, state) => switch (state) {
-      ProductsLoading() => _buildLoading(),
-      ProductsLoaded() || ProductsLoadFailed() => _buildProducts(state.productsState),
-      ProductsEmpty() => const Center(child: Text(Strings.noProductsToView)),
+    builder: (context, state) => switch (state.status) {
+      ProductsStatus.loading => _buildLoading(),
+      ProductsStatus.success || ProductsStatus.failed => _buildProducts(state.products, state.hasReachedMax),
+      ProductsStatus.empty => const Center(child: Text(Strings.noProductsToView)),
     },
   );
 
@@ -74,7 +71,10 @@ class _ProductsContentState extends State<ProductsContent> {
     ),
   );
 
-  Widget _buildProducts(ProductsStateModel state) => MasonryGridView.count(
+  Widget _buildProducts(
+    List<Product> products,
+    bool hasReachedMax,
+  ) => MasonryGridView.count(
     controller: _scrollController,
     crossAxisCount: 2,
     crossAxisSpacing: 10,
@@ -83,13 +83,13 @@ class _ProductsContentState extends State<ProductsContent> {
       top: values.Padding.p10,
       bottom: values.Padding.p20,
     ),
-    itemCount: (state.hasReachedMax)
-        ? state.products.length
-        : state.products.length + 2,
+    itemCount: (hasReachedMax)
+        ? products.length
+        : products.length + 2,
     itemBuilder: (BuildContext context, int index) {
-      return (index >= state.products.length)
+      return (index >= products.length)
           ? const ShimmerWidget(height: values.Size.s180)
-          : ProductTile(product: state.products[index]);
+          : ProductTile(product: products[index]);
     },
   );
 

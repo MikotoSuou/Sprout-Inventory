@@ -3,38 +3,68 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
+import 'package:sprout_inventory/core/error/failure.dart';
+import 'package:sprout_inventory/core/utils/constants.dart';
+import 'package:sprout_inventory/features/product/presentation/products/cubit/products_cubit.dart';
 import '../../../../../fixtures/stub_objects/products.dart';
 import '../../../domain/usecases/get_products_usecase_mock.mocks.dart';
 
 void main() {
   late MockGetProductsUseCase getProductsUseCase;
-  late ProductsBloc productsBloc;
+  late ProductsCubit cubit;
 
   setUp(() {
     getProductsUseCase = MockGetProductsUseCase();
-    productsBloc = ProductsBloc(getProductsUseCase);
+    cubit = ProductsCubit(getProductsUseCase);
   });
 
-  test("initial state should be ProductsLoading", () {
+  test("initial status should be ProductsStatus.loading", () {
     // assert
-    expect(productsBloc.state, equals(const ProductsLoading()));
+    expect(cubit.state.status, equals(ProductsStatus.loading));
   });
 
   group("GetProducts", () {
-
-    void setUpMockGetProducts() => when(getProductsUseCase(any))
+    void setUpMockGetProductsSuccess() => when(getProductsUseCase(any))
             .thenAnswer((_) async => const Left(stubProducts));
 
-    blocTest<ProductsBloc, ProductsState>(
-      "should get data from GetProductsUseCase",
-      setUp: () => setUpMockGetProducts(),
-      build: () => productsBloc,
-      act: (bloc) => bloc.add(const GetProducts()),
+    blocTest<ProductsCubit, ProductsState>(
+      "should update the state to success state",
+      setUp: () => setUpMockGetProductsSuccess(),
+      build: () => cubit,
+      act: (cubit) => cubit.getProducts(),
       verify: (_) => getProductsUseCase(stubProductsParam),
+      expect: () => [
+        ProductsState(
+          status: ProductsStatus.success,
+          products: stubProducts.products,
+          page: 2,
+          hasReachedMax: false,
+          error: Constants.emptyString
+        )
+      ]
+    );
+
+    void setUpMockGetProductsFailed() => when(getProductsUseCase(any))
+        .thenAnswer((_) async => const Right(ServerFailure()));
+
+    blocTest<ProductsCubit, ProductsState>(
+      "should update the state to empty state",
+      setUp: () => setUpMockGetProductsFailed(),
+      build: () => cubit,
+      act: (cubit) => cubit.getProducts(),
+      verify: (_) => getProductsUseCase(stubProductsParam),
+      expect: () => [
+        const ProductsState(
+          status: ProductsStatus.empty,
+          products: [],
+          page: 0,
+          hasReachedMax: false,
+          error: Constants.emptyString
+        )
+      ]
     );
   });
 
-  tearDown(() => productsBloc.close());
+  tearDown(() => cubit.close());
 
 }

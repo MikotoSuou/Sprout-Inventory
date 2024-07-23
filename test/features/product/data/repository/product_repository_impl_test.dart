@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:retrofit/dio.dart';
-import 'package:sprout_inventory/core/error/error_handler.dart';
 import 'package:sprout_inventory/core/error/failure.dart';
 import 'package:sprout_inventory/features/product/data/repository/product_repository_impl.dart';
 import 'package:sprout_inventory/features/product/data/responses/product_detail_response.dart';
