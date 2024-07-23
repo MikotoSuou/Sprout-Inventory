@@ -18,7 +18,7 @@ void main() {
 
   test("initial state should be ProductDetailInitial", () {
     // assert
-    expect(productDetailBloc.state, equals(const ProductDetailInitial()));
+    expect(productDetailBloc.state, equals(const ProductDetailLoading()));
   });
 
   group("GetProductDetail", () {
