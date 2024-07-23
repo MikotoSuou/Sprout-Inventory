@@ -1,6 +1,6 @@
 
 class Strings {
-  static const String appName = "Sprout Inventory";
+  static const String appName = "Inventory";
   static const String noProductsToView = "No products to view";
   static const String discountedPrice = "Discounted price";
   static const String rating = "rating";
