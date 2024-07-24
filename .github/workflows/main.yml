@@ -52,24 +52,24 @@ jobs:
           distribution: 'adopt'
 
       - name: Create app directory
-        run: mkdir -p ../app
+        run: mkdir -p android/app
 
       - name: Decode KeyStore
         run: |
-          echo $KEYSTORE_BASE64 | base64 --decode > ../app/keystore.jks
+          echo $KEYSTORE_BASE64 | base64 --decode > android/app/keystore.jks
 
       - name: Create Key properties
         run: |
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
-          echo "storeFile=../app/keystore.jks" >> key.properties
+          echo "storeFile=android/app/keystore.jks" >> key.properties
 
       - name: Check key.properties
         run: cat key.properties
 
       - name: List files
-        run: ls -R
+        run: ls -R android/app
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
