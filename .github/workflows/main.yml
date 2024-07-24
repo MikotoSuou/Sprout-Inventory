@@ -69,7 +69,7 @@ jobs:
         run: cat key.properties
 
       - name: List files
-        run: ls -R android/app
+        run: ls -R
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
