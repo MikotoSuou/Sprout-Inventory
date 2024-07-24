@@ -31,7 +31,7 @@ jobs:
         run: flutter test
 
   build_apk:
-    name: Build Signed Android APK
+    name: Build Signed APK
     needs: [flutter_test]
     runs-on: ubuntu-latest
 
@@ -54,9 +54,16 @@ jobs:
       - name: Create app directory
         run: mkdir -p android/app
 
-      - name: Decode keystore
+      - name: Decode KeyStore
         run: |
           echo $KEYSTORE_BASE64 | base64 --decode > android/app/keystore.jks
+
+      - name: Create Signing properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> key.properties
+          echo "storeFile=android/app/keystore.jks" >> key.properties
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
