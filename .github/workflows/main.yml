@@ -65,8 +65,8 @@ jobs:
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=android/app/keystore.jks" >> android/key.properties
 
-      - name: Check key.properties
-        run: cat key.properties
+#      - name: Check key.properties
+#        run: cat key.properties
 
       - name: List files
         run: ls -R
