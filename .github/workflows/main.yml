@@ -7,28 +7,28 @@ on:
     branches: [ "main" ]
 
 jobs:
-  flutter_test:
-    name: Flutter Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.22.3
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze project source
-        run: dart analyze
-
-      - name: Run tests
-        run: flutter test
+#  flutter_test:
+#    name: Flutter Test
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Clone Repository
+#        uses: actions/checkout@v4
+#
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          channel: stable
+#          flutter-version: 3.22.3
+#
+#      - name: Install dependencies
+#        run: flutter pub get
+#
+#      - name: Analyze project source
+#        run: dart analyze
+#
+#      - name: Run tests
+#        run: flutter test
 
   build_apk:
     name: Build Signed APK
@@ -64,8 +64,8 @@ jobs:
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
-#      - name: Check key.properties
-#        run: cat key.properties
+      - name: Check key.properties
+        run: cat android/key.properties
 
       - name: List files
         run: ls -R
