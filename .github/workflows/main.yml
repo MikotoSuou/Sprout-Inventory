@@ -51,9 +51,12 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Create app directory
+        run: mkdir -p android/app
+
       - name: Decode keystore
         run: |
-          echo $KEYSTORE_BASE64 | base64 --decode > /app/keystore.jks
+          echo $KEYSTORE_BASE64 | base64 --decode > android/app/keystore.jks
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
