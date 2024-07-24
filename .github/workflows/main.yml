@@ -1,0 +1,99 @@
+name: Main CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  flutter_test:
+    name: Flutter Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.22.3
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze project source
+        run: dart analyze
+
+      - name: Run tests
+        run: flutter test
+
+  build_apk:
+    name: Build Signed APK
+    needs: [flutter_test]
+    runs-on: ubuntu-latest
+
+    env:
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Create app directory
+        run: mkdir -p android/app
+
+      - name: Decode KeyStore
+        run: |
+          echo $KEYSTORE_BASE64 | base64 --decode > android/app/keystore.jks
+
+      - name: Create Key properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=../app/keystore.jks" >> android/key.properties
+
+      - name: Check key.properties
+        run: cat android/key.properties
+
+      - name: List files
+        run: ls -R
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.22.3
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Clean Flutter build
+        run: flutter clean
+
+      - name: Build APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: Inventory.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Mapping File
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: mapping-file
+          path: build/app/outputs/symbols
