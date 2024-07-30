@@ -1,16 +1,8 @@
-# sprout_inventory
+# inventory
 
-Sprout Inventory App
+Inventory App
 
-## Getting Started
+A simple inventory app that shows a list of item and it's detail.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![sc1](https://github.com/user-attachments/assets/3ac40b71-9f19-4d33-90b7-3145079e4db2)
+![sc2](https://github.com/user-attachments/assets/69f54ce6-78c6-4d29-a3f7-c0c1c78d4411)
