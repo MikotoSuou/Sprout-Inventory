@@ -6,9 +6,9 @@ import 'package:sprout_inventory/core/utils/helpers.dart';
 import 'package:sprout_inventory/core/utils/logger.dart';
 import 'package:sprout_inventory/core/utils/widgets.dart';
 import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
-import 'package:sprout_inventory/features/product/presentation/products/models/products_state_model.dart';
 import 'package:sprout_inventory/features/product/presentation/products/widgets/product_tile.dart';
-import 'package:sprout_inventory/res/strings.dart';
+import 'package:sprout_inventory/features/product/presentation/products/widgets/products_empty_content.dart';
+import 'package:sprout_inventory/features/product/presentation/products/widgets/products_loading_content.dart';
 import 'package:sprout_inventory/res/values.dart' as values;
 
 class ProductsContent extends StatefulWidget {
@@ -55,23 +55,10 @@ class _ProductsContentState extends State<ProductsContent> {
       }
     },
     builder: (context, state) => switch (state) {
-      ProductsLoading() => _buildLoading(),
+      ProductsLoading() => const ProductsLoadingContent(),
       ProductsLoaded() || ProductsLoadFailed() => _buildProducts(state.productsState),
-      ProductsEmpty() => const Center(child: Text(Strings.noProductsToView)),
+      ProductsEmpty() => const ProductsEmptyContent(),
     },
-  );
-
-  Widget _buildLoading() => const Align(
-    alignment: Alignment.topCenter,
-    child: Row(
-      children: [
-        Expanded(child: ShimmerWidget(height: values.Size.s180)),
-
-        Space(width: values.Size.s10),
-
-        Expanded(child: ShimmerWidget(height: values.Size.s180))
-      ],
-    ),
   );
 
   Widget _buildProducts(ProductsStateModel state) => MasonryGridView.count(

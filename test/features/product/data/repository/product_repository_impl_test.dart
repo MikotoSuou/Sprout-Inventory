@@ -10,125 +10,95 @@ import 'package:sprout_inventory/features/product/data/responses/product_detail_
 import 'package:sprout_inventory/features/product/data/responses/products_response.dart';
 import 'package:sprout_inventory/features/product/domain/repository/product_repository.dart';
 
+import '../../../../core/data_source/remote/api_service_mock.mocks.dart';
 import '../../../../core/utils/network_info/network_info_mock.mocks.dart';
 import '../../../../fixtures/stub_objects/product_detail.dart';
 import '../../../../fixtures/stub_objects/products.dart';
-import '../data_source/products_data_source_mock.mocks.dart';
 
 
 void main() {
-  late MockIProductRemoteDataSource dataSource;
+  late MockApiService api;
   late MockINetworkInfo networkInfo;
   late IProductRepository repository;
 
   setUpAll(() {
-    dataSource = MockIProductRemoteDataSource();
+    api = MockApiService();
     networkInfo = MockINetworkInfo();
 
-    repository = ProductRepositoryImpl(dataSource, networkInfo);
+    repository = ProductRepositoryImpl(api, networkInfo);
   });
-
-  void runTestsOnline(Function body) {
-    group('device is online', () {
-      setUp(() {
-        when(networkInfo.isNetworkConnected).thenAnswer((_) async => true);
-      });
-
-      body();
-    });
-  }
 
   group('getProducts', () {
     test('should check if the device is online', () async {
-      // arrange
+      const page = 1;
       when(networkInfo.isNetworkConnected).thenAnswer((_) async => true);
 
-      // act
-      repository.getProducts(stubProductsParam);
+      repository.getProducts(page);
 
-      // assert
       verify(networkInfo.isNetworkConnected);
     });
 
-    runTestsOnline(() {
-      test('should return remote data when the call to remote data source is successful', () async {
-        // arrange
-        final response = HttpResponse<ProductsResponse>(
-            stubProductsResponse,
-            Response(
-              statusCode: 200,
-              requestOptions: RequestOptions()
-            )
-        );
-        when(dataSource.products(any))
-            .thenAnswer((_) async => Future.value(response));
+    test('should return left with the correct data on successful get products', () async {
+      const page = 1;
+      final response = HttpResponse<ProductsResponse>(
+          stubProductsResponse,
+          Response(requestOptions: RequestOptions(), statusCode: 200)
+      );
+      when(api.productsService(any))
+          .thenAnswer((_) async => Future.value(response));
 
-        // act
-        final result = await repository.getProducts(stubProductsParam);
+      final result = await repository.getProducts(page);
 
-        // assert
-        verify(dataSource.products(stubProductsRequest));
-        expect(result, equals(const Left(stubProducts)));
-      });
+      expect(result.isLeft(), true);
+      expect(result, const Left(stubProducts));
+    });
 
-      test('should return server failure when the call to remote data source is unsuccessful', () async {
-        // arrange
-        when(dataSource.products(any))
-            .thenThrow(const ServerFailure());
+    test('should return right with failure on failed get products', () async {
+      const page = 1;
+      when(api.productsService(any))
+          .thenThrow(const ServerFailure());
 
-        // act
-        final result = await repository.getProducts(stubProductsParam);
+      final result = await repository.getProducts(page);
 
-        // assert
-        verify(dataSource.products(stubProductsRequest));
-        expect(result, equals(const Right(ServerFailure())));
-      });
+      expect(result.isRight(), true);
+      expect(result, const Right(ServerFailure()));
     });
   });
 
-
   group('getProductDetail', () {
     test('should check if the device is online', () async {
-      // arrange
+      const page = 1;
       when(networkInfo.isNetworkConnected).thenAnswer((_) async => true);
 
-      // act
-      repository.getProductDetail(stubProductDetailParam);
+      repository.getProducts(page);
 
-      // assert
       verify(networkInfo.isNetworkConnected);
     });
 
-    runTestsOnline(() {
-      test('should return remote data when the call to remote data source is successful', () async {
-        // arrange
-        final response = HttpResponse<ProductDetailResponse>(
-            stubProductDetailResponse,
-            Response(requestOptions: RequestOptions(), statusCode: 200)
-        );
-        when(dataSource.productDetail(any))
-            .thenAnswer((_) async => Future.value(response));
+    test('should return left with the correct data on successful get product detail', () async {
+      const id = 1;
+      final response = HttpResponse<ProductDetailResponse>(
+          stubProductDetailResponse,
+          Response(requestOptions: RequestOptions(), statusCode: 200)
+      );
+      when(api.productDetailService(any))
+          .thenAnswer((_) async => Future.value(response));
 
-        // act
-        final result = await repository.getProductDetail(stubProductDetailParam);
+      final result = await repository.getProductDetail(id);
 
-        // assert
-        verify(dataSource.productDetail(stubProductDetailRequest));
-        expect(result, equals(const Left(stubProductDetail)));
-      });
+      expect(result.isLeft(), true);
+      expect(result, const Left(stubProductDetail));
+    });
 
-      test('should return server failure when the call to remote data source is unsuccessful', () async {
-        // arrange
-        when(dataSource.productDetail(any))
-            .thenThrow(const ServerFailure());
+    test('should return right with failure on failed get product detail', () async {
+      const id = 1;
+      when(api.productDetailService(any))
+          .thenThrow(const ServerFailure());
 
-        // act
-        final result = await repository.getProductDetail(stubProductDetailParam);
+      final result = await repository.getProductDetail(id);
 
-        // assert
-        verify(dataSource.productDetail(stubProductDetailRequest));
-        expect(result, equals(const Right(ServerFailure())));
-      });
+      expect(result.isRight(), true);
+      expect(result, const Right(ServerFailure()));
     });
   });
 

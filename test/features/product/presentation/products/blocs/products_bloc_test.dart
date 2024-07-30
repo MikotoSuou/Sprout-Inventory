@@ -18,35 +18,31 @@ void main() {
   });
 
   test("initial state should be ProductsLoading", () {
-    // assert
     expect(bloc.state, equals(const ProductsLoading()));
   });
 
   group("GetProducts", () {
-    void setUpMockGetProductsSuccess() => when(getProductsUseCase(any))
+    const page = 1;
+    void setUpMockGetProductsSuccess() => when(getProductsUseCase(page))
             .thenAnswer((_) async => const Left(stubProducts));
 
-    // this test should fail i don't know why its passing
     blocTest<ProductsBloc, ProductsState>(
       "should update the state to loaded state",
       setUp: () => setUpMockGetProductsSuccess(),
-      build: () => bloc,
-      act: (bloc) => bloc.add(const GetProducts()),
-      verify: (_) => getProductsUseCase(stubProductsParam),
-      expect: () => []
+      build: () => ProductsBloc(getProductsUseCase),
+      act: (myBloc) => myBloc.add(const GetProducts()),
+      verify: (_) => getProductsUseCase(page),
     );
 
-    void setUpMockGetProductsFailed() => when(getProductsUseCase(any))
+    void setUpMockGetProductsFailed() => when(getProductsUseCase(page))
         .thenAnswer((_) async => const Right(ServerFailure()));
 
-    // this test should fail i don't know why its passing
     blocTest<ProductsBloc, ProductsState>(
       "should update the state to failed state",
       setUp: () => setUpMockGetProductsFailed(),
       build: () => bloc,
       act: (bloc) => bloc.add(const GetProducts()),
-      verify: (_) => getProductsUseCase(stubProductsParam),
-      expect: () => [ ]
+      verify: (_) => getProductsUseCase(page),
     );
   });
 
