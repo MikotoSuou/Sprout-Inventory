@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:sprout_inventory/features/product/domain/usecases/get_products_usecase.dart';
 
 import '../../../../../core/utils/helpers.dart';
-import '../models/products_state_model.dart';
+import '../../../domain/entities/product.dart';
 
 part 'products_event.dart';
 part 'products_state.dart';
@@ -34,7 +34,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         final page = data.page + 1;
         final hasReachedMax = (data.products.isEmpty);
 
-        emit(ProductsLoaded(productsState: state.productsState.copyWith(products: products, page: page, hasReachedMax: hasReachedMax)));
+        (products.isNotEmpty)
+            ? emit(ProductsLoaded(productsState: state.productsState.copyWith(products: products, page: page, hasReachedMax: hasReachedMax)))
+            : emit(const ProductsEmpty());
       },
       (error) {
         emit(ProductsLoadFailed(productsState: state.productsState, error: error.message));

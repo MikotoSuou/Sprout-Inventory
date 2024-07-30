@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:sprout_inventory/core/error/failure.dart';
 import 'package:sprout_inventory/features/product/presentation/products/blocs/products_bloc.dart';
-import 'package:sprout_inventory/features/product/presentation/products/models/products_state_model.dart';
 import '../../../../../fixtures/stub_objects/products.dart';
 import '../../../domain/usecases/get_products_usecase_mock.mocks.dart';
 
@@ -19,7 +18,6 @@ void main() {
   });
 
   test("initial state should be ProductsLoading", () {
-    // assert
     expect(bloc.state, equals(const ProductsLoading()));
   });
 
@@ -34,10 +32,9 @@ void main() {
       build: () => ProductsBloc(getProductsUseCase),
       act: (myBloc) => myBloc.add(const GetProducts()),
       verify: (_) => getProductsUseCase(page),
-      expect: () => [],
     );
 
-    void setUpMockGetProductsFailed() => when(getProductsUseCase(any))
+    void setUpMockGetProductsFailed() => when(getProductsUseCase(page))
         .thenAnswer((_) async => const Right(ServerFailure()));
 
     blocTest<ProductsBloc, ProductsState>(
