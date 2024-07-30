@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:sprout_inventory/core/data_source/remote/api_service.dart';
 import 'package:sprout_inventory/core/utils/extensions/response_ext.dart';
-import 'package:sprout_inventory/features/product/data/data_source/products_data_source.dart';
 import 'package:sprout_inventory/features/product/data/mappers/product_detail_response_mapper.dart';
 import 'package:sprout_inventory/features/product/data/mappers/products_response_mapper.dart';
 import 'package:sprout_inventory/features/product/domain/repository/product_repository.dart';
@@ -13,11 +13,11 @@ import '../../domain/entities/products.dart';
 
 
 class ProductRepositoryImpl extends IProductRepository {
-  final IProductRemoteDataSource _productRemoteDataSource;
+  final ApiService _api;
   final INetworkInfo _networkInfo;
 
   ProductRepositoryImpl(
-    this._productRemoteDataSource,
+    this._api,
     this._networkInfo
   );
 
@@ -28,7 +28,7 @@ class ProductRepositoryImpl extends IProductRepository {
     }
 
     try {
-      final productsResponse = await _productRemoteDataSource.products(page.toString());
+      final productsResponse = await _api.productsService(page.toString());
 
       if(productsResponse.response.isSuccessful) {
         final productsEntity = productsResponse.data.toDomain;
@@ -51,7 +51,7 @@ class ProductRepositoryImpl extends IProductRepository {
     }
 
     try {
-      final productDetailResponse = await _productRemoteDataSource.productDetail(productId.toString());
+      final productDetailResponse = await _api.productDetailService(productId.toString());
 
       if(productDetailResponse.response.isSuccessful) {
         final productDetailEntity = productDetailResponse.data.toDomain;

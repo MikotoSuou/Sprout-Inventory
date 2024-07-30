@@ -26,34 +26,19 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     Emitter<ProductsState> emit
   ) async {
     if(state.productsState.hasReachedMax) return;
-    if(state.productsState.page == 0) emit(const ProductsLoading());
     final result = await _getProductsUseCase(state.productsState.page);
 
     result.fold(
       (data) {
         final products = List.of(state.productsState.products)..addAll(data.products);
-        // final filteredProducts = removeDuplicates(products);
         final page = data.page + 1;
         final hasReachedMax = (data.products.isEmpty);
-        final productsState = state.productsState.copyWith(products: products, page: page, hasReachedMax: hasReachedMax);
 
-        (products.isEmpty)
-            ? emit(const ProductsEmpty())
-            : emit(ProductsLoaded(productsState: productsState));
+        emit(ProductsLoaded(productsState: state.productsState.copyWith(products: products, page: page, hasReachedMax: hasReachedMax)));
       },
       (error) {
-        (state.productsState.products.isEmpty)
-            ? emit(const ProductsEmpty())
-            : emit(ProductsLoadFailed(productsState: state.productsState, error: error.message));
+        emit(ProductsLoadFailed(productsState: state.productsState, error: error.message));
       },
     );
   }
 }
-
-// List<T> removeDuplicates<T>(List<T> list) {
-//   // Convert the list to a set to remove duplicates
-//   Set<T> set = list.toSet();
-//   // Convert the set back to a list
-//   List<T> result = set.toList();
-//   return result;
-// }
